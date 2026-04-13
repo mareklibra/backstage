@@ -25,7 +25,8 @@ import { createSseRouter } from './routers/createSseRouter';
 import {
   actionsRegistryServiceRef,
   actionsServiceRef,
-  metricsServiceRef,
+  MetricsService,
+  // metricsServiceRef,
 } from '@backstage/backend-plugin-api/alpha';
 import { parseServerConfigs } from './config';
 
@@ -48,7 +49,7 @@ export const mcpPlugin = createBackendPlugin({
         rootRouter: coreServices.rootHttpRouter,
         discovery: coreServices.discovery,
         config: coreServices.rootConfig,
-        metrics: metricsServiceRef,
+        // metrics: metricsServiceRef,
       },
       async init({
         actions,
@@ -58,8 +59,20 @@ export const mcpPlugin = createBackendPlugin({
         rootRouter,
         discovery,
         config,
-        metrics,
+        // metrics,
       }) {
+        const noop = () => {};
+        const noopInstrument = { record: noop, add: noop };
+        const noopObservable = { addCallback: noop, removeCallback: noop };
+        const metrics: MetricsService = {
+          createCounter: () => noopInstrument,
+          createUpDownCounter: () => noopInstrument,
+          createHistogram: () => noopInstrument,
+          createGauge: () => noopInstrument,
+          createObservableCounter: () => noopObservable,
+          createObservableUpDownCounter: () => noopObservable,
+          createObservableGauge: () => noopObservable,
+        };
         const serverConfigs = parseServerConfigs(config);
         const namespacedToolNames = config.getOptionalBoolean(
           'mcpActions.namespacedToolNames',

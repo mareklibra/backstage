@@ -26,13 +26,18 @@ import {
   MetricsServiceHistogram,
   MetricsService,
 } from '@backstage/backend-plugin-api/alpha';
-import { version } from '@backstage/plugin-mcp-actions-backend/package.json';
+// import { version } from '@backstage/plugin-mcp-actions-backend/package.json';
 import { NotFoundError } from '@backstage/errors';
 import { performance } from 'node:perf_hooks';
 
 import { handleErrors } from './handleErrors';
 import { bucketBoundaries, McpServerOperationAttributes } from '../metrics';
 import { FilterRule, McpServerConfig } from '../config';
+
+const version = '0.1.11';
+console.log(
+  `Using mcp-actions-backend version ${version} with fixes and patches for compatibility with Backstage 1.45.3`,
+);
 
 export class McpService {
   private readonly actions: ActionsService;
